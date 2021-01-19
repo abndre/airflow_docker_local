@@ -1,0 +1,12 @@
+{
+  "Teste": {
+    "conn_type": "http",
+    "description": "",
+    "host": "localhost",
+    "login": "admin",
+    "password": "admin",
+    "schema": "",
+    "port": 8080,
+    "extra": ""
+  }
+}
