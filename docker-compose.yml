@@ -12,18 +12,34 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "renatogroff@yahoo.com.br"
-      PGADMIN_DEFAULT_PASSWORD: "airflow"
-    ports:
-      - "9999:80"
-    depends_on:
-      - postgres
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: "airflow"
+#      PGADMIN_DEFAULT_PASSWORD: "airflow"
+#    ports:
+#      - "9999:80"
+#    depends_on:
+#      - postgres
   webserver:
       image: apache/airflow
       entrypoint: ./scripts/entrypoint.sh
+#      restart_policy:
+#          condition: on-failure
+      depends_on:
+          - postgres
+          - scheduler
+      env_file:
+          - .env_airflow
+      volumes:
+          - ./dags:/opt/airflow/dags
+          - ./logs:/opt/airflow/logs
+          - ./scripts:/opt/airflow/scripts
+      ports:
+          - "9998:8080"
+  scheduler:
+      image: apache/airflow
+      entrypoint: ./scripts/scheduler.sh
 #      restart_policy:
 #          condition: on-failure
       depends_on:
@@ -34,5 +50,32 @@ services:
           - ./dags:/opt/airflow/dags
           - ./logs:/opt/airflow/logs
           - ./scripts:/opt/airflow/scripts
-      ports:
-          - "9998:8080"
+
+#webserver:
+#    build: .
+#    restart: always
+#    depends_on:
+#      - postgres
+#    volumes:
+#      - ./airflow_files/dags:/usr/local/airflow/dags
+#    ports:
+#      - "8080:8080"
+#    entrypoint: airflow webserver
+#    healthcheck:
+#      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+#      interval: 30s
+#      timeout: 30s
+#      retries: 3
+#  scheduler:
+#    build: .
+#    restart: always
+#    depends_on:
+#      - postgres
+#    volumes:
+#      - ./airflow_files/dags:/usr/local/airflow/dags
+#    entrypoint: airflow scheduler
+#    healthcheck:
+#      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-scheduler.pid ]"]
+#      interval: 30s
+#      timeout: 30s
+#      retries: 3

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -a
+. ./.env_airflow
+set +a
