@@ -21,3 +21,18 @@ services:
       - "9999:80"
     depends_on:
       - postgres
+  webserver:
+      image: apache/airflow
+      entrypoint: ./scripts/entrypoint.sh
+#      restart_policy:
+#          condition: on-failure
+      depends_on:
+          - postgres
+      env_file:
+          - .env_airflow
+      volumes:
+          - ./dags:/opt/airflow/dags
+          - ./logs:/opt/airflow/logs
+          - ./scripts:/opt/airflow/scripts
+      ports:
+          - "9998:8080"
