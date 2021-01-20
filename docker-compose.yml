@@ -28,7 +28,7 @@ services:
 #          condition: on-failure
       depends_on:
           - postgres
-          - scheduler
+          # - scheduler
       env_file:
           - .env_airflow
       volumes:
@@ -37,19 +37,19 @@ services:
           - ./scripts:/opt/airflow/scripts
       ports:
           - "9998:8080"
-  scheduler:
-      image: apache/airflow
-      entrypoint: ./scripts/scheduler.sh
-#      restart_policy:
-#          condition: on-failure
-      depends_on:
-          - postgres
-      env_file:
-          - .env_airflow
-      volumes:
-          - ./dags:/opt/airflow/dags
-          - ./logs:/opt/airflow/logs
-          - ./scripts:/opt/airflow/scripts
+#  scheduler:
+#      image: apache/airflow
+#      entrypoint: ./scripts/scheduler.sh
+##      restart_policy:
+##          condition: on-failure
+#      depends_on:
+#          - postgres
+#      env_file:
+#          - .env_airflow
+#      volumes:
+#          - ./dags:/opt/airflow/dags
+#          - ./logs:/opt/airflow/logs
+#          - ./scripts:/opt/airflow/scripts
 
 #webserver:
 #    build: .
