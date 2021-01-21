@@ -1,6 +1,10 @@
 # Airflow Docker Local
 
-#project structure
+Projeto para se executar o Airflow com docker-compose.
+
+Alem de uma stack para ser possivel utilizar o scheduler localmente.
+
+#Project structure
 ```
 root/
 ├── dags/
@@ -12,27 +16,45 @@ root/
 └── docker-compose.yml
 ```
 
+
 # Commands
 
+## Executando projeto Docker-compose Full
+
 ```
-# coloque seu $PWD do airflow
-export AIRFLOW_HOME=/Users/andre/airflow_dev
-
-echo $AIRFLOW_HOME
-
-pip install apache-airflow
-
-source /Users/andre/venv38/bin/activate
-
-airflow db init
+docker-compose up postgres webserver scheduler
 ```
 
-Algum erro de permissao use:
+## Executando projeto Docker-compose com Scheduler Local
+
+Execute este comando em um terminal
 ```
-chmod -R 777 scripts
+docker-compose up postgres webserver
+```
+Execute este comando em outro terminal, mas na pasta
+deste repositorio
+```
+export AIRFLOW_HOME=$PWD
+
+airflow scheduler
 ```
 
+## Acessando Web
 
+Para acessar a pagina web do airflow, acesso o localhost na porta
+9998: [WEB](http://localhost:9998)
+
+## Parando os processos
+
+utilize o comando
+
+```
+docker-compose down
+```
+
+## Parando processo em daemon
+
+### Scheduler
 
 Deletando processos airflow em Daemon
 
@@ -42,20 +64,56 @@ ps aux | grep 'airflow scheduler'
 kill $(ps -ef | grep "airflow scheduler" | awk '{print $2}')
 ```
 
-Variavel local para o projeto
+## Varivel de ambiente Path do airflow
+
+Variavel local para o projeto com PWD
+
 ```
 export AIRFLOW_HOME=/Users/andresantosbarrosdasilva/Documents/airflow_dev
 ````
 
+## Acesso ao projeto
+
+![login](images/login.png)
+
+Para acessar a pagina do airflow utilize o usuario admin e senha admin,
+este usuario e criado no arquivo scripts/entrypoint.sh
+
+```
+admin:admin
+```
+
+# Criando Dags
+
+Na pasta
+
+```
+root/
+├── dags/
+│   └── dummy_dag.py
+```
+
+Voce pode editar e criar dags, que serao automaticamente 
+adicionadas ao projeto.
+
 # Erros Comuns
 
-Se ocorrer este erro
+## Erro no DockerComponent das Dags
+Se ocorrer este erro ao se utilizar o DockerComponent
+
 ```
 [2021-01-19 10:49:27,436] {local_task_job.py:118} INFO - Task exited with return code Negsignal.SIGABRT
 ```
 
-utilize isto:
+adicione esta variavel de ambiente ao scheduler:
 
 ```
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+```
+
+## Permissao
+
+Algum erro de permissao use:
+```
+chmod -R 777 scripts
 ```

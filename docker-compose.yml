@@ -11,16 +11,15 @@ services:
       - "5432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
-
-#  pgadmin:
-#    image: dpage/pgadmin4
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: "airflow"
-#      PGADMIN_DEFAULT_PASSWORD: "airflow"
-#    ports:
-#      - "9999:80"
-#    depends_on:
-#      - postgres
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "airflow"
+      PGADMIN_DEFAULT_PASSWORD: "airflow"
+    ports:
+      - "9999:80"
+    depends_on:
+      - postgres
   webserver:
       image: apache/airflow
       entrypoint: ./scripts/entrypoint.sh
@@ -37,19 +36,19 @@ services:
           - ./scripts:/opt/airflow/scripts
       ports:
           - "9998:8080"
-#  scheduler:
-#      image: apache/airflow
-#      entrypoint: ./scripts/scheduler.sh
-##      restart_policy:
-##          condition: on-failure
-#      depends_on:
-#          - postgres
-#      env_file:
-#          - .env_airflow
-#      volumes:
-#          - ./dags:/opt/airflow/dags
-#          - ./logs:/opt/airflow/logs
-#          - ./scripts:/opt/airflow/scripts
+  scheduler:
+      image: apache/airflow
+      entrypoint: ./scripts/scheduler.sh
+#      restart_policy:
+#          condition: on-failure
+      depends_on:
+          - postgres
+      env_file:
+          - .env_airflow
+      volumes:
+          - ./dags:/opt/airflow/dags
+          - ./logs:/opt/airflow/logs
+          - ./scripts:/opt/airflow/scripts
 
 #webserver:
 #    build: .
