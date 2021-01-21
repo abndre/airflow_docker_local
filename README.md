@@ -64,13 +64,6 @@ ps aux | grep 'airflow scheduler'
 kill $(ps -ef | grep "airflow scheduler" | awk '{print $2}')
 ```
 
-## Varivel de ambiente Path do airflow
-
-Variavel local para o projeto com PWD
-
-```
-export AIRFLOW_HOME=/Users/andresantosbarrosdasilva/Documents/airflow_dev
-````
 
 ## Acesso ao projeto
 
@@ -113,7 +106,8 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 ## Permissao
 
-Algum erro de permissao use:
+Algum erro de permissao pode ocorrer ao 
+rodar o docker-compose, entao use:
 ```
 chmod -R 777 scripts
 ```
