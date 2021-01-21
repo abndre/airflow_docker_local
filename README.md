@@ -4,7 +4,7 @@ Projeto para se executar o Airflow com docker-compose.
 
 Alem de uma stack para ser possivel utilizar o scheduler localmente.
 
-#Project structure
+# Project structure
 ```
 root/
 ├── dags/
