@@ -24,6 +24,17 @@ root/
 ```
 docker-compose up postgres webserver scheduler
 ```
+Caso ocorra algum problema no scheduler, inicie ele separadamente
+
+```
+docker-compose up postgres webserver
+```
+
+e em outro terminal:
+
+```
+docker-compose up scheduler
+```
 
 ## Executando projeto Docker-compose com Scheduler Local
 
@@ -110,4 +121,6 @@ Algum erro de permissao pode ocorrer ao
 rodar o docker-compose, entao use:
 ```
 chmod -R 777 scripts
+chmod -R 777 dags
+chmod -R 777 logs
 ```
