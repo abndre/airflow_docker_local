@@ -1,0 +1,82 @@
+version: "3"
+services:
+  postgres:
+    image: "postgres:9.6"
+    container_name: "postgres"
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "airflow"
+      PGADMIN_DEFAULT_PASSWORD: "airflow"
+    ports:
+      - "9999:80"
+    depends_on:
+      - postgres
+  webserver:
+      image: apache/airflow
+      environment:
+        - LOAD_EX=n
+      entrypoint: ./scripts/entrypoint.sh
+#      restart_policy:
+#          condition: on-failure
+      depends_on:
+          - postgres
+          # - scheduler
+      env_file:
+          - .env_airflow_broker
+      volumes:
+          - ./dags:/opt/airflow/dags
+          - ./logs:/opt/airflow/logs
+          - ./scripts:/opt/airflow/scripts
+      ports:
+          - "9998:8080"
+  scheduler:
+      image: apache/airflow
+      environment:
+        - LOAD_EX=n
+      entrypoint: ./scripts/scheduler.sh
+#      restart_policy:
+#          condition: on-failure
+      depends_on:
+          - postgres
+      env_file:
+          - .env_airflow_broker
+      volumes:
+          - ./dags:/opt/airflow/dags
+          - ./logs:/opt/airflow/logs
+          - ./scripts:/opt/airflow/scripts
+  worker:
+    image: apache/airflow
+    environment:
+      - LOAD_EX=n
+    entrypoint: ./scripts/worker.sh
+    depends_on:
+      - postgres
+    env_file:
+      - .env_airflow_broker
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./scripts:/opt/airflow/scripts
+  redis:
+    image: 'redis:5.0.5'
+  flower:
+    image: apache/airflow
+    depends_on:
+      - redis
+    env_file:
+      - .env_airflow_broker
+    environment:
+      - EXECUTOR=Celery
+      - LOAD_EX=n
+    ports:
+      - "5555:5555"
+    command: celery flower
